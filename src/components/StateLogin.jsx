@@ -1,27 +1,22 @@
 import { useState } from "react";
 
 export default function Login() {
-  // const [enteredEmail, setEnteredEmail] = useState("");
-  // const [enteredPassword, setEnteredPassowrd] = useState("");
-
   const [enteredValues, setEnteredValues] = useState({
     email: "",
     password: "",
   });
 
-  const emailIsInvalid =
-    enteredValues.email !== "" && !enteredValues.email.includes("@");
+  const [didEdit, setDidEdit] = useState({
+    email: false,
+    password: false,
+  });
+
+  const emailIsInvalid = didEdit.email && !enteredValues.email.includes("@");
 
   function handleSubmit(event) {
     event.preventDefault();
 
     console.log(enteredValues);
-    // console.log("User password: " + enteredValues);
-
-    // setEnteredValues({
-    //   email: "",
-    //   password: "",
-    // });
   }
 
   function handleChangeInput(identifier, value) {
@@ -29,15 +24,19 @@ export default function Login() {
       ...prevValues,
       [identifier]: value,
     }));
+
+    setDidEdit((prevEdit) => ({
+      ...prevEdit,
+      [identifier]: false,
+    }));
   }
 
-  // function handleEmailChange(event) {
-  //   setEnteredEmail(event.target.value);
-  // }
-
-  // function handlePassowrdChange(event) {
-  //   setEnteredPassowrd(event.target.value);
-  // }
+  function handleInputBlur(identifier) {
+    setDidEdit((prevEdit) => ({
+      ...prevEdit,
+      [identifier]: true,
+    }));
+  }
 
   return (
     <form onSubmit={handleSubmit}>
@@ -50,6 +49,7 @@ export default function Login() {
             id="email"
             type="email"
             name="email"
+            onBlur={() => handleInputBlur("email")}
             onChange={(e) => handleChangeInput("email", e.target.value)}
             value={enteredValues.email}
           />
